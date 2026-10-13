@@ -1,0 +1,4 @@
+requests
+lxml
+pypdf
+# system: poppler-utils (pdftotext)
