@@ -6,15 +6,16 @@ The Constitution of the Islamic Republic of Mauritania (Arabic, consolidated), c
 in **French**, and laws/ordinances published in the French edition of the *Journal officiel de la République
 Islamique de Mauritanie* (2017–2026).
 
-**Total: 31 texts** (retrieved 2026-10-13).
+**Total: 246 texts** (retrieved 2026-10-13).
 
 | Directory | Files | Years |
 |---|---|---|
 | `ar/constitution/` | 1 |  |
 | `ar/organic-laws/` | 1 |  |
 | `fr/codes/` | 11 |  |
-| `fr/lois/` | 17 | 2017–2017 |
-| `fr/lois-organiques/` | 1 | 2017–2017 |
+| `fr/lois/` | 208 | 2017–2026 |
+| `fr/lois-organiques/` | 24 | 2017–2023 |
+| `fr/ordonnances/` | 1 | 2020–2020 |
 
 ## Structure
 

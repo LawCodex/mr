@@ -118,22 +118,30 @@ def jo():
                 continue
             caps.setdefault(key, []).append((ts, orig))
     print("jo issues", len(caps), flush=True)
+    import concurrent.futures
+    import threading
+    lock = threading.Lock()
     man = open(man_path, "a", encoding="utf-8")
-    for key, cl in sorted(caps.items()):
-        if key in done:
-            continue
+
+    def one(item):
+        key, cl = item
         for ts, orig in sorted(set(cl), reverse=True)[:4]:
             r = get("https://web.archive.org/web/%sid_/%s" % (ts, orig), delay=2)
             if r is None or r.content[:5] != b"%PDF-" or "truncated" in r.headers.get("warning", ""):
                 continue
             fn = key + ".pdf"
             open(os.path.join(out_dir, fn), "wb").write(r.content)
-            man.write(json.dumps({"key": key, "file": fn, "original": orig.split("?")[0],
-                                  "wayback": "https://web.archive.org/web/%s/%s" % (ts, orig), "timestamp": ts},
-                                 ensure_ascii=False) + "\n")
-            man.flush()
+            with lock:
+                man.write(json.dumps({"key": key, "file": fn, "original": orig.split("?")[0],
+                                      "wayback": "https://web.archive.org/web/%s/%s" % (ts, orig), "timestamp": ts},
+                                     ensure_ascii=False) + "\n")
+                man.flush()
             print("got", key, flush=True)
-            break
+            return
+
+    todo = [(k, v) for k, v in sorted(caps.items()) if k not in done]
+    with concurrent.futures.ThreadPoolExecutor(3) as ex:
+        list(ex.map(one, todo))
 
 
 if __name__ == "__main__":

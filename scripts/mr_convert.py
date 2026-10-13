@@ -202,7 +202,7 @@ def main():
         print(k, v)
 
 
-HEAD_RX = re.compile(r"(?i)^(loi|ordonnance)(\s+(organique|constitutionnelle|constitutionnelle\s+r[ée]f[ée]rendaire))?\s*n\s*[°o]\s*(\d{2,4})\s*[-–\.]\s*(\d{2,4})")
+HEAD_RX = re.compile(r"^(Loi|LOI|Ordonnance|ORDONNANCE)(\s+((?i:organique|constitutionnelle|constitutionnelle\s+r[ée]f[ée]rendaire)))?\s*(?i:n)\s*[°o]\s*(\d{2,4})\s*[-–\.]\s*(\d{2,4})")
 
 
 def jo_laws(counts):
@@ -236,7 +236,8 @@ def jo_laws(counts):
             kind = m.group(1).lower() + ("-" + m.group(3).lower().split()[0] if m.group(3) else "")
             a, b = m.group(4), m.group(5)
             year, num = (a, b) if len(a) == 4 else (b, a) if len(b) == 4 else (a, b)
-            if len(year) != 4:
+            if len(year) != 4 or not (1960 <= int(year) <= int(TODAY[:4])):
+                print("JO bad number", d["key"], chunk[0], file=LOG)
                 continue
             key = (kind, year, num.lstrip("0") or "0")
             if key in seen or sum(len(x) for x in chunk) < 200:
